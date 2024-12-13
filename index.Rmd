@@ -1,0 +1,103 @@
+---
+title: "Typologies Maps and Figures"
+author: "Laura Nelson"
+date: "2024-12-12"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+require(sf)
+require(mapview)
+require(tidyverse)
+library(RColorBrewer)
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+econ <- st_read("./econ_spatial_places.shp") %>% select(NAME, state, cluster, geometry)
+socv <- st_read("./sv_spatial_places.shp") %>% select(NAME, State, cluster, geometry)
+ener <- st_read("./en_spatial_places.shp") %>% select(NAME, State, cluster, geometry)
+typ <- st_read("./typology_2.shp") %>% select(NAME, State, ctypo, ecn_cls, en_clst, sv_clst, geometry)
+
+```
+
+```{r message=FALSE, warning=FALSE, include=FALSE}
+#display.brewer.pal(n = 3, name = 'RdYlBu')
+
+pallete <- c("#6e7cb9","#7bbcd5", "#f5db99","#e89c81","#a45851")
+#pallete <-rev(brewer.pal(5, "RdYlBu"))
+pallete2 <- pallete[1:3]
+
+require(paletteer)
+cp <-paletteer_c("ggthemes::Sunset-Sunrise Diverging", 33)
+cp
+
+set.seed(7)
+cp2 <- sample(cp)
+cp2
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mapview(econ, zcol = "cluster", col.regions=pallete)
+```
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+require(ggplot2)
+ggplot(econ, aes(x=cluster, fill = cluster)) + 
+  geom_bar()+
+    scale_fill_manual(values=c("#6e7cb9","#7bbcd5", "#f5db99","#e89c81","#a45851"))+
+  geom_text(stat='count', aes(label=after_stat(count)), vjust=-0.25)+
+  theme_bw()+
+  theme(legend.position="none",panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mapview(socv, zcol = "cluster", col.regions=pallete2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(socv, aes(x=cluster, fill = cluster)) + 
+  geom_bar()+
+    scale_fill_manual(values=c("#6e7cb9","#7bbcd5", "#f5db99"))+
+  geom_text(stat='count', aes(label=after_stat(count)), vjust=-0.25)+
+  theme_bw()+
+  theme(legend.position="none",panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mapview(ener, zcol = "cluster", col.regions= pallete2)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(ener, aes(x=cluster, fill = cluster)) + 
+  geom_bar()+
+    scale_fill_manual(values=c("#6e7cb9","#7bbcd5", "#f5db99"))+
+  geom_text(stat='count', aes(label=after_stat(count)), vjust=-0.25)+
+  theme_bw()+
+  theme(legend.position="none",panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+mapview(typ, zcol = "ctypo", col.regions = cp)
+```
+
+```{r echo=FALSE, message=FALSE, warning=FALSE}
+ggplot(typ, aes(x=ctypo, fill = ctypo)) + 
+  geom_bar()+
+  geom_text(stat='count', aes(label=after_stat(count)), size = 2.5,vjust=-0.25)+
+  labs(x = "Typology")+
+  theme_bw()+
+scale_fill_manual(values = cp)+
+#  scale_fill_viridis(discrete = TRUE, option = "D") +
+ #scale_fill_manual(values = c("#2f4f4f","#556b2f","#a0522d","#483d8b","#008000","#3cb371","#bc8f8f","#b8860b","#bdb76b","#000080","#20b2aa","#32cd32","#8b008b","#b03060","#ff4500","#ff8c00","#ffd700","#00ff00","#9400d3","#00fa9a","#dc143c","#00bfff","#0000ff","#adff2f","#b0c4de","#ff00ff","#6495ed","#dda0dd","#ff1493","#7b68ee","#ffa07a","#7fffd4","#ffdab9"))+
+    theme(axis.text.x=element_blank(),
+        axis.ticks.x=element_blank(),legend.title=element_blank(),panel.grid.major = element_blank(),
+    panel.grid.minor = element_blank())
+
+```
