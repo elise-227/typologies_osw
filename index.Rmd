@@ -29,6 +29,9 @@ typology <- st_read("./typology_2.shp") %>% select(NAME, State, ctypo, ecn_cls, 
 port_typology <- st_read("./port_5000m_typologies.shp")  %>% select(NAME, State, ctypo, ecn_cls, en_clst, sv_clst, geometry)
 ports <- st_read("./osw_suitable_ports.shp") %>% select(Name, geometry)
 
+#st_layers(dsn = "./BOEM_Renewable_Energy_Geodatabase_0/BOEM_Renewable_Energy_Geodatabase.gdb/")
+lease_areas <- st_read("./BOEM_Renewable_Energy_Geodatabase_0/BOEM_Renewable_Energy_Geodatabase.gdb/", layer = "BOEM_Wind_Lease_Outlines_06_06_2024") %>% filter(STATE == "CA")  
+planning_areas <- st_read("./BOEM_Renewable_Energy_Geodatabase_0/BOEM_Renewable_Energy_Geodatabase.gdb/", layer = "BOEM_Wind_Planning_Area_Outlines_04_29_2024") %>% filter(CATEGORY1 == "Oregon Proposed Sale Notice (PSN)")
 ```
 
 ## Results
@@ -53,7 +56,7 @@ cp2
 ### Economic Cluster
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-mapview(econ, zcol = "cluster", col.regions=pallete)
+mapview(econ, zcol = "cluster", col.regions=pallete) + mapview(lease_areas, col.regions = "magenta") + mapview(planning_areas, col.regions = "lightpink")
 ```
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
 require(ggplot2)
@@ -70,7 +73,7 @@ ggplot(econ, aes(x=cluster, fill = cluster)) +
 ### Social Vulnerability Cluster
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-mapview(social_vul, zcol = "cluster", col.regions=pallete2)
+mapview(social_vul, zcol = "cluster", col.regions=pallete2) + mapview(lease_areas, col.regions = "magenta") + mapview(planning_areas, col.regions = "lightpink")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -86,7 +89,7 @@ ggplot(social_vul, aes(x=cluster, fill = cluster)) +
 ### Energy Cluster
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-mapview(energy, zcol = "cluster", col.regions= pallete2)
+mapview(energy, zcol = "cluster", col.regions= pallete2) + mapview(lease_areas, col.regions = "magenta") + mapview(planning_areas, col.regions = "lightpink")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -102,7 +105,7 @@ ggplot(energy, aes(x=cluster, fill = cluster)) +
 ### Final Typologies
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-mapview(typology, zcol = "ctypo", col.regions = cp)
+mapview(typology, zcol = "ctypo", col.regions = cp) + mapview(lease_areas, col.regions = "magenta") + mapview(planning_areas, col.regions = "lightpink")
 ```
 
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
@@ -124,6 +127,6 @@ scale_fill_manual(values = cp)+
 
 Typologies of communities 5000 meters from a port listed as suitable in the [The Impacts of Developing a Port Network for Floating Offshore Wind Energy on the West Coast of the United States](https://www.nrel.gov/docs/fy23osti/86864.pdf) report
 ```{r echo=FALSE, message=FALSE, warning=FALSE}
-mapview(port_typology, zcol = "ctypo", col.regions = cp2, legend = T) + mapview(ports, col.regions = "black",cex = 3, legend = F)
+mapview(port_typology, zcol = "ctypo", col.regions = cp2, legend = T) + mapview(ports, col.regions = "black",cex = 3, legend = F) + mapview(lease_areas, col.regions = "magenta") + mapview(planning_areas, col.regions = "lightpink")
 
 ```
